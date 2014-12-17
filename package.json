@@ -1,0 +1,27 @@
+{
+  "name": "radomir",
+  "version": "0.0.2",
+  "description": "A minimal smalltalk/self-like prototype oop lang in javascript(es6)",
+  "author": "Alexander Ivanov <alehander42@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alehander42/radomir"
+  },
+  "bin": {
+    "radomir": "./bin/radomir"
+  },
+  "bugs": {
+    "url": "https://github.com/alehander42/radomir"
+  },
+  "keywords": [
+    "prototype",
+    "apocalypse",
+    "smalltalk"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "peg": "0.8.0"
+  },
+  "license": "MIT"
+}
