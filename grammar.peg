@@ -1,0 +1,83 @@
+/*
+ * Classic example grammar, which recognizes simple arithmetic expressions like
+ * "2*(3+4)". The parser generated from this grammar then computes their value.
+ */
+
+start
+  = module
+
+module
+  = e:(s:expression ws?)* { ast=[];for(var z = 0;z<e.length;z++){ast.push(e[z][0]);} return ast }
+
+expression
+  = block / assignment / message / number / string / symbol / label / parened
+
+ws
+  = [ \n]+
+
+block
+  = args:args ws? '=>' ws? '[' e:(expression ws?)* ']'
+
+assignment
+  = left:label ws? '=' ws? right:assignable {
+      return {type: 'assignment', left: left, right: right}
+    }
+
+assignable
+  = block / message / number / string / symbol / label / parened
+
+message
+  = keyword / binary / unary
+
+keyword
+  = r:no_message ws? right:(label ':' ws? no_message ws?)+ {
+   name = '';x = [];console.log(right);for(var i = 0; i < right.length; i++) { name += right[i][0].label + ':'; x = x.concat(right[i][3]); }; return {type: 'message', receiver: r, message: name, args: x} }
+
+unary
+  = r:no_message ws? a:label { return {type: 'message', receiver: r, message: a.label, args: []} }
+
+binary
+  = r:no_binary ws? m:op ws? x:no_binary { return {type: 'message', receiver: r, message: m.label, args: [x]} }
+
+
+no_binary
+  = block / unary / string / symbol / number / label / parened
+
+no_message
+  = block / symbol / string / number / label / parened
+
+parened
+  = '(' a:assignable ')' { return a }
+
+number
+  = n:[0-9]+ { return {type: 'number', value: parseInt(n) } }
+
+string
+  = s:("'" [^\']* "'") { return {type: 'string', value: s.slice(1, s.length - 1).join()} }
+
+symbol
+  = '~' p:pattern { return {type: 'sym', value: p.label } }
+
+pattern
+  = z_pattern / label / op
+
+z_pattern
+  = t:(label ':')+ {
+      result = [];
+      for(var i = 0;i < t.length;i++) { result = result.concat(t[i][0].label + ':'); }
+      return {label: result.join('')};
+    }
+
+label
+  = t:[a-zA-Z]+ { return {type: 'label', label: t.join('')}; }
+
+op
+  = ex:[\-\*\+\/] { return {type: 'operator', label: ex} }
+
+args
+  = label? ws? (',' ws? label)* ws?
+
+
+
+
+
